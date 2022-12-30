@@ -1,0 +1,94 @@
+#!/bin/sh
+
+rm -r build
+
+mkdir -p build/etc
+
+mkdir -p build/etc/qlimiter/kernel
+mkdir -p build/etc/qlimiter/scripts
+
+mkdir -p build/etc/hotplug.d/iface
+
+buildpath=./kernel/limit_s
+
+make -C $buildpath clean
+make -C $buildpath
+
+cp $buildpath/*.o build/etc/qlimiter/kernel
+cp scripts/* build/etc/qlimiter/scripts
+chmod 755 build/etc/qlimiter/scripts/*
+
+cat > build/etc/qlimiter/vars << EOF
+# tc config
+KERNEL_NAME=/etc/qlimiter/kernel/bpf.o
+KERNEL_SECTION=limitator
+
+LIMIT_SPEED_0=128mbit
+LIMIT_SPEED_1=64kbit
+
+#--------------------
+IFACE=eth0
+IFB_IFACE=ifb0
+
+Q_SIZE=1073741824
+MARK=0xAA
+EOF
+
+cat > build/etc/qlimiter/cfw << EOF
+#!/bin/sh
+
+. /etc/qlimiter/vars
+
+nft --version > /dev/null 2>&1
+if [ \$? -eq 0 ]; then
+    . /etc/qlimiter/scripts/nft_create
+else
+    . /etc/qlimiter/scripts/ipt_create
+fi
+EOF
+chmod 755 build/etc/qlimiter/cfw 
+
+cat > build/etc/qlimiter/resetq << EOF
+#!/bin/sh
+
+. /etc/qlimiter/vars
+
+echo $Q_SIZE > /proc/net/xt_quota/quota
+bpftool map update name f_map key hex fa fa 00 f0 value hex 00 00 00 00 exist
+
+EOF
+chmod 755 build/etc/qlimiter/resetq
+
+cat > build/etc/qlimiter/srun << EOF
+#!/bin/sh
+
+. /etc/qlimiter/vars
+
+SCRIPTPATH="\$(cd -- "\$(dirname "\$0")" >/dev/null 2>&1; pwd -P)"
+
+#. \$SCRIPTPATH/scripts/openwrt_module_check
+
+nft --version > /dev/null 2>&1
+if [ \$? -eq 0 ]; then
+    . \$SCRIPTPATH/scripts/nft_create
+else
+    . \$SCRIPTPATH/scripts/ipt_create
+fi
+
+. \$SCRIPTPATH/scripts/tc_create
+EOF
+chmod 755 build/etc/qlimiter/srun
+
+cat > build/etc/hotplug.d/iface/80-tc_create << EOF
+#!/bin/sh
+
+. /etc/qlimiter/vars
+
+if [ "\$ACTION" = "ifup" ]; then 
+    if [ "\$DEVICE" = "\$IFACE" ]; then        
+        . /etc/qlimiter/scripts/tc_create
+    fi
+fi
+EOF
+
+tar zc -C build -f qlimiter.tar.gz --group=root:0 --owner=root:0 `ls build`

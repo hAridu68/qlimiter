@@ -1,0 +1,37 @@
+#!/bin/sh
+
+# tc config
+KERNEL_NAME=./bpf_l.o
+KERNEL_SECTION=limitator
+
+LIMIT_SPEED_0=128mbit
+LIMIT_SPEED_1=64kbit
+
+#--------------------
+IFACE=enp0s7
+IFB_IFACE=ifb0
+
+Q_SIZE=1073741824
+
+MARK=0xAA
+
+buildpath=./kernel/limit_s
+
+rm *.o
+
+make -C $buildpath clean
+make -C $buildpath
+
+cp $buildpath/*.o .
+
+#. ./scripts/openwrt_module_check
+
+
+nft --version > /dev/null 2>&1
+if [ $? -eq 0 ]; then
+    . ./scripts/nft_create
+else
+    . ./scripts/ipt_create
+fi
+
+. ./scripts/tc_create

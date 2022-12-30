@@ -1,0 +1,37 @@
+#!/bin/sh
+
+if [ -z $ipt ]; then
+    ipt="iptables"
+fi
+
+#-------COUNTER-------
+q_name=q_counter
+qjmp="PREROUTING -i $IFACE -j $q_name"
+
+$ipt -t raw -D $qjmp > /dev/null 2>&1
+$ipt -t raw -F $q_name > /dev/null 2>&1 
+$ipt -t raw -X $q_name > /dev/null 2>&1
+
+$ipt -t raw -N $q_name 
+$ipt -t raw -A $q_name -m quota2 ! --quota $Q_SIZE --name quota -j ACCEPT
+
+$ipt -t raw -A $qjmp
+
+#-------MARKER--------
+
+c_marker=cmarker
+qmark="-m quota2 ! --quota 0 --name quota --no-change -j MARK --set-mark $MARK"
+jmrk="$IFACE -j $c_marker"
+
+$ipt -t mangle -D POSTROUTING -o $jmrk > /dev/null 2>&1
+$ipt -t mangle -D PREROUTING  -i $jmrk > /dev/null 2>&1
+
+$ipt -t mangle -F $c_marker > /dev/null 2>&1
+$ipt -t mangle -X $c_marker > /dev/null 2>&1
+
+$ipt -t mangle -N $c_marker
+$ipt -t mangle -A $c_marker $qmark 
+
+$ipt -t mangle -A POSTROUTING -o $jmrk 
+$ipt -t mangle -A PREROUTING  -i $jmrk 
+

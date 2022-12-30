@@ -1,0 +1,35 @@
+#!/bin/sh
+
+function modules_chk()
+{
+    echo "opkg Init."
+    opkg update > /dev/null 2>&1
+    if [ -n "`opkg info iptables-mod-quota2 | grep 'not-installed'`" ]; then
+        echo "installing iptables-mod-quota2"        
+
+        nft --version > /dev/null 2>&1
+        if [ $? -eq 0 ]; then
+             local extra_module="xtables-nft iptables-nft ip6tables-nft kmod-ipt-quota2"
+        fi
+
+        opkg install $extra_module iptables-mod-quota2 > /dev/null 2>&1      
+    fi
+    
+    if [ -z "`lsmod | grep xt_quota2`" ]; then
+        modprobe xt_quota2
+    fi
+
+    if [ -n "`opkg info tc-bpf | grep 'not-installed'`" ]; then
+        echo "Installing tc-bpf, bfttool-minimal"
+        opkg install tc-bpf kmod-sched-core bpftool-minimal kmod-sched-bpf > /dev/null 2>&1
+    fi
+    
+    if [ -n "`opkg info kmod-ifb | grep 'not-installed'`" ]; then
+        echo "Installing kmod-ifb"
+        opkg install kmod-ifb > /dev/null 2>&1
+    fi
+
+}
+
+modules_chk
+

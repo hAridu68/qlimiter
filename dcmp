@@ -1,0 +1,16 @@
+#!/bin/sh
+
+echo ""
+echo "Self Extracting for qlimiter"
+echo ""
+
+target=/
+
+BINARY=`awk '/^__BINARY__/ {print NR + 1; exit 0;}' $0`
+
+echo "Extract to \"$target\""
+tail -n+$BINARY $0 | tar xzv -C $target
+
+exit 0
+
+__BINARY__

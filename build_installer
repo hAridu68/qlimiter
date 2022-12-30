@@ -1,0 +1,10 @@
+#!/bin/sh
+
+./build_tar
+
+if [ -e qlimiter.tar.gz ]; then
+    cat dcmp qlimiter.tar.gz > ./qlimiter.run
+    chmod 755 ./qlimiter.run
+else
+    echo "qlimiter.tar.gz not exist"
+fi

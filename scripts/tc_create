@@ -1,0 +1,38 @@
+#!/bin/sh
+
+_tc="tc"
+
+if [ -z "`lsmod | grep ifb`" ]; then
+    modprobe ifb
+fi
+
+ip link set dev $IFB_IFACE up
+
+$_tc qdisc del dev $IFACE root handle 1: > /dev/null 2>&1 
+$_tc qdisc del dev $IFB_IFACE root handle 1: > /dev/null 2>&1 
+$_tc qdisc del dev $IFACE ingress > /dev/null 2>&1
+
+$_tc qdisc add dev $IFACE root handle 1: hfsc default 1
+$_tc class add dev $IFACE parent 1: classid 1:1 hfsc rt m2 $LIMIT_SPEED_0
+$_tc class add dev $IFACE parent 1: classid 1:10 hfsc rt m2 $LIMIT_SPEED_1
+
+$_tc qdisc add dev $IFACE parent 1:1 handle 11: fq_codel
+$_tc qdisc add dev $IFACE parent 1:10 handle 12: fq_codel
+
+$_tc filter add dev $IFACE parent 1: handle 77 protocol all prio 1 \
+               bpf object-file $KERNEL_NAME section $KERNEL_SECTION classid 1:10
+
+$_tc qdisc add dev $IFACE handle ffff: ingress
+$_tc filter add dev $IFACE parent ffff: protocol all \
+        u32 match u32 0 0 action mirred egress redirect dev $IFB_IFACE
+
+$_tc qdisc add dev $IFB_IFACE root handle 1: hfsc default 1
+$_tc class add dev $IFB_IFACE parent 1: classid 1:1 hfsc rt m2 $LIMIT_SPEED_0
+$_tc class add dev $IFB_IFACE parent 1: classid 1:10 hfsc rt m2 $LIMIT_SPEED_1
+
+$_tc qdisc add dev $IFB_IFACE parent 1:1 handle 11: fq_codel
+$_tc qdisc add dev $IFB_IFACE parent 1:10 handle 12: fq_codel
+
+$_tc filter add dev $IFB_IFACE parent 1: handle 77 protocol all prio 1 \
+               bpf object-file $KERNEL_NAME section $KERNEL_SECTION classid 1:10
+

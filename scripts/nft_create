@@ -1,0 +1,5 @@
+#!/bin/sh
+
+ipt="iptables-nft"
+
+. /etc/qlimiter/scripts/ipt_create
