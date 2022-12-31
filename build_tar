@@ -53,7 +53,7 @@ cat > build/etc/qlimiter/resetq << EOF
 
 . /etc/qlimiter/vars
 
-echo $Q_SIZE > /proc/net/xt_quota/quota
+echo \$Q_SIZE > /proc/net/xt_quota/quota
 bpftool map update name f_map key hex fa fa 00 f0 value hex 00 00 00 00 exist
 
 EOF
@@ -90,5 +90,7 @@ if [ "\$ACTION" = "ifup" ]; then
     fi
 fi
 EOF
+
+cp -r patch/* build/
 
 tar zc -C build -f qlimiter.tar.gz --group=root:0 --owner=root:0 `ls build`
