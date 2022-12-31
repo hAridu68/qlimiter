@@ -1,0 +1,3 @@
+build/**
+kernel/limit_s/*.o
+kernel/limit_s/*.li
