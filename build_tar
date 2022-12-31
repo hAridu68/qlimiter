@@ -36,6 +36,14 @@ Q_SIZE=1073741824
 MARK=0xAA
 EOF
 
+cat > build/etc/qlimiter/qsave << EOF
+#!/bin/sh
+
+cat /proc/net/xt_quota/quota > /etc/qcont
+
+EOF
+chmod 755 build/etc/qlimiter/qsave 
+
 cat > build/etc/qlimiter/cfw << EOF
 #!/bin/sh
 
@@ -47,6 +55,11 @@ if [ \$? -eq 0 ]; then
 else
     . /etc/qlimiter/scripts/ipt_create
 fi
+
+if [ -e "/etc/qcont" ]; then 
+    cat /etc/qcont > /proc/net/xt_quota/quota
+fi
+
 EOF
 chmod 755 build/etc/qlimiter/cfw 
 
