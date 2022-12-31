@@ -3,7 +3,7 @@
 _tc="tc"
 
 if [ -z "`lsmod | grep ifb`" ]; then
-    modprobe ifb
+    modprobe ifb numifbs=1
 fi
 
 ip link set dev $IFB_IFACE up
