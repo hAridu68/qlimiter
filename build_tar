@@ -91,6 +91,6 @@ if [ "\$ACTION" = "ifup" ]; then
 fi
 EOF
 
-cp -r patch/* build/
+cp -r patches/* build/
 
 tar zc -C build -f qlimiter.tar.gz --group=root:0 --owner=root:0 `ls build`
