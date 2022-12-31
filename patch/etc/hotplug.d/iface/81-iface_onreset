@@ -1,0 +1,9 @@
+#!/bin/sh
+
+TARGET=/tmp/q_counter
+
+if [ ${ACTION} = ifdown ]; then
+    cat /proc/net/xt_quota/quota > $TARGET
+elif [ ${ACTION} = ifup]
+    cat $TARGET > /proc/net/xt_quota/quota 
+fi
