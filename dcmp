@@ -11,6 +11,19 @@ BINARY=`awk '/^__BINARY__/ {print NR + 1; exit 0;}' $0`
 echo "Extract to \"$target\""
 tail -n+$BINARY $0 | tar xzv -C $target
 
+#-----POST EXTRUCT------
+if [ -z "`awk '/^#qlimiter/ {print $1; exit 0;}' /etc/crontabs/root`"]; then
+cat >> /etc/crontabs/root << EOF
+#qlimiter
+*/10 * * * * /etc/qlimiter/qsave
+#
+30 0 * * * /etc/qlimiter/resetq
+#
+
+EOF
+fi
+#
+
 exit 0
 
 __BINARY__
