@@ -6,12 +6,10 @@ echo ""
 
 rm -r build
 
-mkdir -p build/etc
-
-mkdir -p build/etc/qlimiter/kernel
-mkdir -p build/etc/qlimiter/scripts
-
-mkdir -p build/etc/hotplug.d/iface
+mkdir -p build/etc                  \
+         build/etc/qlimiter/kernel  \
+         build/etc/qlimiter/scripts \
+         build/etc/hotplug.d/iface
 
 buildpath=./kernel/limit_s
 
