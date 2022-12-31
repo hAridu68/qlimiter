@@ -61,6 +61,10 @@ __Static int update(const __u32 key, const __u32 value)
     return ret;
 }
 
+__section("limitator/ingress") int cls_main2(struct __sk_buff *skb){
+    return read(KEY_FLOW_STATE);
+}
+
 __section("limitator") int cls_main(struct __sk_buff *skb)
 {
     __u32 flow_state;
