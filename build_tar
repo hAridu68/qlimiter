@@ -1,5 +1,9 @@
 #!/bin/sh
 
+echo ""
+echo "Packaging only for openwrt 22.03"
+echo ""
+
 rm -r build
 
 mkdir -p build/etc
