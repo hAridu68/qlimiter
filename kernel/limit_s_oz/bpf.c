@@ -69,6 +69,39 @@ __section("limitator/ingress") int cls_main2(struct __sk_buff *skb)
 __section("limitator") int cls_main(struct __sk_buff *skb)
 {
     __u32 flow_state;
+    /*
+    if ((flow_state = read(KEY_FLOW_STATE)) == 0x0bad)
+    {
+        flow_state = FLOW_OFF;
+    }
+
+    switch (skb->mark)
+    {
+    case FW_MARK_FLOW:
+        flow_state = FLOW_ON;
+        trace_printk("ret(FLOW_ON, !limitator): flow_state=%d, mark=%d\n", flow_state, FW_MARK_FLOW);
+        break;
+    case FW_MARK_DONTFLOW:
+        flow_state = FLOW_OFF;
+        trace_printk("ret(FLOW_OFF, !limitator): flow_state=%d, mark=%d\n", flow_state, FW_MARK_DONTFLOW);
+    default:
+        trace_printk("ret(mark, skb->mark), skb->mark=%d", skb->mark);
+        break;
+    }
+    update(KEY_FLOW_STATE, flow_state);
+    */
+    flow_state = (FW_MARK_DONTFLOW ^ skb->mark);
+    
+    switch (flow_state)
+    {
+    case 0:
+    case 0xA0:
+        update(KEY_FLOW_STATE, flow_state);
+        trace_printk("ret(mark, skb->mark), skb->mark=%d, flow_state=%d", skb->mark, flow_state);
+        break;
+    }
+
+    return read(KEY_FLOW_STATE);
 }
 
 char __license[] __section("license") = "GPL";
