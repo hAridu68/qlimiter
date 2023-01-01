@@ -90,13 +90,14 @@ __section("limitator") int cls_main(struct __sk_buff *skb)
     }
     update(KEY_FLOW_STATE, flow_state);
     */
-    flow_state = (FW_MARK_DONTFLOW ^ skb->mark);
-    
+   
+    flow_state = (0x55 ^ skb->mark);
+
     switch (flow_state)
     {
-    case 0:
-    case 0xA0:
-        update(KEY_FLOW_STATE, flow_state);
+    case 0xFF:
+    case 0x5F:
+        update(KEY_FLOW_STATE, (0xFFFFFF00 + flow_state));
         trace_printk("ret(mark, skb->mark), skb->mark=%d, flow_state=%d", skb->mark, flow_state);
         break;
     }
