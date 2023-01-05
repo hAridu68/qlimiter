@@ -2,8 +2,8 @@
 
 TARGET=/tmp/q_counter
 
-if [ ${ACTION} = ifdown ]; then
+if [ "${ACTION}" == "ifdown" ]; then
     cat /proc/net/xt_quota/quota > $TARGET
-elif [ ${ACTION} = ifup]
+elif [ "${ACTION}" == "ifup" ]; then
     cat $TARGET > /proc/net/xt_quota/quota 
 fi
