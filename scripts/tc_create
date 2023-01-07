@@ -20,7 +20,7 @@ $_tc qdisc add dev $IFACE parent 1:1 handle 11: fq_codel
 $_tc qdisc add dev $IFACE parent 1:10 handle 12: fq_codel
 
 $_tc filter add dev $IFACE parent 1: handle 77 protocol all prio 1 \
-               bpf object-file $KERNEL_NAME section $KERNEL_SECTION classid 1:10
+               bpf object-file $KERNEL_NAME section $KERNEL_SECTION da
 
 $_tc qdisc add dev $IFACE handle ffff: ingress
 $_tc filter add dev $IFACE parent ffff: protocol all \
@@ -34,5 +34,5 @@ $_tc qdisc add dev $IFB_IFACE parent 1:1 handle 11: fq_codel
 $_tc qdisc add dev $IFB_IFACE parent 1:10 handle 12: fq_codel
 
 $_tc filter add dev $IFB_IFACE parent 1: handle 77 protocol all prio 1 \
-               bpf object-file $KERNEL_NAME section $KERNEL_SECTION/ingress classid 1:10
+               bpf object-file $KERNEL_NAME section $KERNEL_SECTION/ingress da
 
