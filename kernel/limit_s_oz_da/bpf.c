@@ -71,7 +71,14 @@ __section("limitator") int cls_main(struct __sk_buff *skb)
     flow_state = read(KEY_FLOW_STATE);
 
     skb->tc_classid = skb->mark;
-    flow_state = skb->mark == FLOW_DROP ? TC_ACT_SHOT : TC_ACT_OK;
+    flow_state = TC_ACT_OK;
+    
+    switch (skb->mark)
+    {
+    case FLOW_DROP:
+        flow_state = TC_ACT_SHOT;
+        break;
+    }
 
     // update(KEY_MARK_DUMP, skb->mark);
     update(KEY_CLASSID, skb->tc_classid);
