@@ -58,7 +58,8 @@ __Static int update(const __u32 key, const __u32 value)
     return ret;
 }
 
-__section("limitator/ingress") int cls_main2(struct __sk_buff *skb){
+__section("limitator/ingress") int cls_main2(struct __sk_buff *skb)
+{
     skb->tc_classid = read(KEY_CLASSID);
     return read(KEY_FLOW_STATE);
 }
@@ -66,7 +67,7 @@ __section("limitator/ingress") int cls_main2(struct __sk_buff *skb){
 __section("limitator") int cls_main(struct __sk_buff *skb)
 {
     __u32 flow_state;
-    
+
     if ((flow_state = read(KEY_FLOW_STATE)) == 0x0bad)
     {
         flow_state = TC_ACT_UNSPEC;
@@ -75,21 +76,21 @@ __section("limitator") int cls_main(struct __sk_buff *skb)
     switch (skb->mark)
     {
     case FLOW_DROP:
-        flow_state = TC_ACT_SHOT;        
+        flow_state = TC_ACT_SHOT;
         break;
-    
+
     default:
         skb->tc_classid = skb->mark;
         flow_state = TC_ACT_OK;
         break;
     }
-    
-    //update(KEY_MARK_DUMP, skb->mark);
+
+    // update(KEY_MARK_DUMP, skb->mark);
     update(KEY_CLASSID, skb->tc_classid);
     update(KEY_FLOW_STATE, flow_state);
 
-    trace_printk("ret(): skb->tc_classid=%d, skb->mark=%d, flow_state=%d", skb->tc_classid, skb->mark, flow_state)
-    
+    trace_printk("ret(): skb->tc_classid=%d, skb->mark=%d, flow_state=%d", skb->tc_classid, skb->mark, flow_state);
+
     return flow_state;
 }
 
