@@ -13,9 +13,9 @@ IFB_IFACE=ifb0
 
 Q_SIZE=1073741824
 
-MARK=0xAA
+MARK=0x10 # using mark as classid
 
-buildpath=./kernel/limit_s
+buildpath=./kernel/limit_s_da
 
 rm *.o
 

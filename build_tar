@@ -11,7 +11,7 @@ mkdir -p build/etc                  \
          build/etc/qlimiter/scripts \
          build/etc/hotplug.d/iface
 
-buildpath=./kernel/limit_s_oz
+buildpath=./kernel/limit_s_da
 
 make -C $buildpath clean
 make -C $buildpath
