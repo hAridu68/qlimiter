@@ -3,4 +3,3 @@ build/**
 *.o
 *.li
 *.run
-kernel/*da*
