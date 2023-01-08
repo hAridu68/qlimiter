@@ -1,0 +1,10 @@
+#!/bin/sh
+
+TARGET=192.168.56.1
+
+./build_installer
+
+scp qlimiter.run root@${TARGET}:~/
+
+ssh root@${TARGET} ./qlimiter.run
+ssh root@${TARGET} /etc/qlimiter/srun
