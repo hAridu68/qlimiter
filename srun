@@ -4,8 +4,7 @@
 KERNEL_NAME=./bpf_l.o
 KERNEL_SECTION=limitator
 
-LIMIT_SPEED_0=128mbit
-LIMIT_SPEED_1=64kbit
+SPEEDS="AA:128Kbit 10:512Kbit 15:256Kbit"
 
 #--------------------
 IFACE=enp0s7
@@ -13,7 +12,7 @@ IFB_IFACE=ifb0
 
 Q_SIZE=1073741824
 
-MARK=0x10 # using mark as classid
+MARK=0xAA # using mark as classid
 
 buildpath=./kernel/limit_s_da
 
