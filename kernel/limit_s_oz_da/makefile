@@ -2,7 +2,7 @@
 #DEBUG=-D DEBUG
 CFLAGS=-g -Wall $(DEBUG)
 CFLAGS_=-D USE_OLD_SECTION -D USING_SAFE_FUNC $(DEBUG)
-LLVM-STRIP=llvm-strip-11
+LLVM-STRIP=llvm-strip-13
 
 all: bpf.o bpf_l.o
 
