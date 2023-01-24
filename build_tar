@@ -25,6 +25,7 @@ cat > build/etc/qlimiter/vars << EOF
 KERNEL_NAME=/etc/qlimiter/kernel/bpf.o
 KERNEL_SECTION=limitator
 
+#Format(classid:speed ...)
 SPEEDS="AA:128Kbit 10:512Kbit 15:256Kbit"
 
 #--------------------

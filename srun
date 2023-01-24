@@ -4,6 +4,7 @@
 KERNEL_NAME=./bpf_l.o
 KERNEL_SECTION=limitator
 
+#Format(classid:speed ...)
 SPEEDS="AA:128Kbit 10:512Kbit 15:256Kbit"
 
 #--------------------
