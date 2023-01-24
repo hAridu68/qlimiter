@@ -23,14 +23,15 @@ make -C $buildpath
 
 cp $buildpath/*.o .
 
-#. ./scripts/openwrt_module_check
+SCRIPTPATH=`realpath ./scripts`
 
+#. ./scripts/openwrt_module_check
 
 nft --version > /dev/null 2>&1
 if [ $? -eq 0 ]; then
-    . ./scripts/nft_create
+    . $SCRIPTPATH/nft_create
 else
-    . ./scripts/ipt_create
+    . $SCRIPTPATH/ipt_create
 fi
 
-. ./scripts/tc_create
+. $SCRIPTPATH/tc_create
