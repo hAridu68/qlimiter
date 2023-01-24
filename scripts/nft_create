@@ -2,4 +2,15 @@
 
 ipt="iptables-nft"
 
-. /etc/qlimiter/scripts/ipt_create
+if [ -d '/etc/qlimiter/scripts' ]; then
+    . /etc/qlimiter/scripts/ipt_create
+    done
+fi
+
+if [ -z $SCRIPTPATH ]; then
+    SCRIPTFULLNAME=`realpath $0`
+    SCRIPTPATH=`dirname $SCRIPTFULLNAME`    
+fi
+
+. $SCRIPTPATH/ipt_create
+
