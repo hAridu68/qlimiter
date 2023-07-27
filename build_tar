@@ -73,7 +73,7 @@ cat > build/etc/qlimiter/resetq << EOF
 
 case \$Q_MODE in 
     2)
-        let "Q_ADDED=`cat /proc/net/xt_quota/quota`+Q_SIZE"
+        let "Q_ADDED=\`cat /proc/net/xt_quota/quota\`+Q_SIZE"
         echo \$Q_ADDED > /proc/net/xt_quota/quota
     ;;
     *)
