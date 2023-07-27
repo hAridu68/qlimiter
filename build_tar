@@ -32,6 +32,9 @@ SPEEDS="AA:128Kbit 10:512Kbit 15:256Kbit"
 IFACE=eth0
 IFB_IFACE=ifb0
 
+#Q_MODE, 1=Reset, 2=Add
+Q_MODE=1
+
 Q_SIZE=1073741824
 MARK=0xAA
 EOF
@@ -68,7 +71,16 @@ cat > build/etc/qlimiter/resetq << EOF
 
 . /etc/qlimiter/vars
 
-echo \$Q_SIZE > /proc/net/xt_quota/quota
+case \$Q_MODE in 
+    2)
+        let "Q_ADDED=`cat /proc/net/xt_quota/quota`+Q_SIZE"
+        echo \$Q_ADDED > /proc/net/xt_quota/quota
+    ;;
+    *)
+        echo \$Q_SIZE > /proc/net/xt_quota/quota
+    ;;
+esac
+
 bpftool map update name f_map key hex fa fa 00 f0 value hex 00 00 00 00 exist
 
 EOF
